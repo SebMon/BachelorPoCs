@@ -7,11 +7,9 @@ export default function FolderComponent(props) {
         
         for await (const [key, value] of props.value.entries()) {
             if (value.kind === "file") {
-                console.log("File")
                 newFiles.push({key: key, value: value})
             }
             else if (value.kind === "directory") {
-                console.log("Folder")
                 newFolders.push({key: key, value: value})
             }
         }
