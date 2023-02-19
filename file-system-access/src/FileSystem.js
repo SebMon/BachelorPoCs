@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FileComponent from "./File";
 import FolderComponent from "./Folder";
 
 export default function FileSystemComponent () {
@@ -35,7 +36,9 @@ export default function FileSystemComponent () {
                     </li>
                 ))}
                 {files.map((x) => (
-                    <li key={x.key}>{x.value.kind}: {x.key}</li>
+                    <li key={x.key}>
+                        <FileComponent name={x.key} value={x.value}></FileComponent>
+                    </li>
                 ))}
             </ul>
             <p>Folders: {folders.length}</p>
