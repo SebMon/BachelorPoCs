@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import FileComponent from "./File";
 import FolderComponent from "./Folder";
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Button, ListGroup } from 'react-bootstrap'
 
 export default function FileSystemComponent () {
     const [files, setFiles] = useState([])
@@ -29,21 +31,19 @@ export default function FileSystemComponent () {
 
     return (
         <div>
-            <ul>
-                {folders.map((x) => (
-                    <li key={x.key}>
-                        <FolderComponent name={x.key} value={x.value} setFolders={setFolders} setFiles={setFiles}></FolderComponent>
-                    </li>
-                ))}
-                {files.map((x) => (
-                    <li key={x.key}>
-                        <FileComponent name={x.key} value={x.value}></FileComponent>
-                    </li>
-                ))}
-            </ul>
-            <p>Folders: {folders.length}</p>
-            <p>Files: {files.length}</p>
-            <button onClick={onSelectFolder}>Select Folder</button>
+                <ListGroup>
+                    {folders.map((x) => (
+                        <ListGroup.Item key={x.key}>
+                            <FolderComponent name={x.key} value={x.value} setFolders={setFolders} setFiles={setFiles}></FolderComponent>
+                        </ListGroup.Item>
+                    ))}
+                    {files.map((x) => (
+                        <ListGroup.Item key={x.key}>
+                            <FileComponent name={x.key} value={x.value}></FileComponent>
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+                <Button onClick={onSelectFolder}>Select Folder</Button>           
         </div>
     )
 }

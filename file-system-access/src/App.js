@@ -4,8 +4,10 @@ import FileSystemComponent from './FileSystem';
 
 function App() {
   return (
-    <div>
-      <FileSystemComponent/>
+    <div className='App'>
+      <header className='App-header'>
+        <FileSystemComponent/>
+      </header>
     </div>
   );
 }

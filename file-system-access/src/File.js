@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Col, Container, Row } from 'react-bootstrap'
+import { BsFileEarmark, BsFileEarmarkFont,  BsSave } from 'react-icons/bs'
+import './App.css'
 
 export default function FileComponent(props) {
     const [preview, setPreview] = useState(false)
@@ -23,21 +27,30 @@ export default function FileComponent(props) {
         await writable.close()
     }
 
+    let fileRow = (<Row><p><BsFileEarmark/> {props.name}</p></Row>)
+
+    if (writableFiles.includes(dataType)) {
+        fileRow = (<Row className="Pointer" onClick={() => preview ? setPreview(false) : setPreview(true)}><p><BsFileEarmarkFont/> {props.name}</p></Row>)
+    }
+
     return (
-        <div>
-            <p>{props.value.kind}: {props.name}</p>
-            {
-                writableFiles.includes(dataType) &&
-                <button onClick={() => preview ? setPreview(false) : setPreview(true)}>Toggle Preview</button>
-            }
+        <Container>
+            {fileRow}
             {
                 preview &&
                 <div>
-                    <textarea value={text} onChange={e => setText(e.target.value)}></textarea>
-                    <button onClick={saveToFile}>Save</button>
+                    <Row>
+                        <textarea rows="10" className="form-control" value={text} onChange={e => setText(e.target.value)}></textarea>
+                    </Row>
+                    <Row>
+                        <Col sm={1}>
+                            <BsSave onClick={saveToFile} className="Pointer HoverInvert"/>
+                        </Col>
+                    </Row>
                 </div>
             }
             
-        </div>
+            
+        </Container>
     )
 }
