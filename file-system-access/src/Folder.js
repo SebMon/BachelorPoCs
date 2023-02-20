@@ -1,4 +1,8 @@
 import React from "react";
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Row } from 'react-bootstrap'
+import { BsFolder } from 'react-icons/bs'
+import './App.css'
 
 export default function FolderComponent(props) {
     const openFolder = async () => {
@@ -19,9 +23,8 @@ export default function FolderComponent(props) {
     }
 
     return (
-        <div>
-            <p>{props.value.kind}: {props.name}</p>
-            <button onClick={openFolder}>Open</button>
-        </div>
+        <Row onClick={openFolder} className="Pointer">
+            <p><BsFolder/> {props.name}</p>
+        </Row>
     )
 }
