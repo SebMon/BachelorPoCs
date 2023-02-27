@@ -16,11 +16,9 @@ export default function FileSystemComponent () {
         
         for await (const [key, value] of directoryHandle.entries()) {
             if (value.kind === "file") {
-                console.log("File")
                 newFiles.push({key: key, value: value})
             }
             else if (value.kind === "directory") {
-                console.log("Folder")
                 newFolders.push({key: key, value: value})
             }
         }
