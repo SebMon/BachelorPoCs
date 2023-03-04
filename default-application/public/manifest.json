@@ -1,0 +1,31 @@
+{
+  "short_name": "Default App",
+  "name": "Default Application",
+  "icons": [
+    {
+      "src": "default-app-icon.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "file_handlers" : [
+    {
+      "action": "/",
+      "accept": {
+        "text/plain": [".defaultapp"]
+      },
+      "icons": [
+        {
+          "src": "default-app-icon.png",
+          "sizes": "256x256",
+          "type": "image/png"
+        }
+      ],
+      "launch_type": "single-client"
+    }
+  ]
+}
