@@ -1,10 +1,11 @@
 
-pub fn print_primes(limit: usize) {
+pub fn get_primes(limit: usize) -> Vec<usize>{
+    let mut primes = Vec::new();
     if limit > 2 {
-        print!("{} ", 2);
+        primes.push(2);
     };
     if limit > 3 {
-        print!("{} ", 3);
+        primes.push(3);
     };
 
     let mut sieve = vec![false; limit + 1];
@@ -54,7 +55,9 @@ pub fn print_primes(limit: usize) {
 
     for a in 5..=limit {
         if sieve[a] {
-            print!("{} ", a);
+            primes.push(a);
         }
     }
+
+    primes
 }
