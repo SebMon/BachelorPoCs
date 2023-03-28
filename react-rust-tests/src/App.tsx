@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
-import init, { fib, proteins } from 'src-wasm';
+import init, { calculate_primes, proteins } from 'src-wasm';
+import SieveOfAtkin from './SieveOfAtkin';
+import NeedlemanWunsch from './NeedlemanWunsch';
 
 function randomProtein(length: number) {
   let result = '';
@@ -19,40 +19,53 @@ function randomProtein(length: number) {
 
 function App() {
   const [a, setA] = useState(0);
+  const [b, setB] = useState(0);
+  const [primeText, setPrimeText] = useState("");
+  const [proteinText, setProteinText] = useState("");
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h2>Benchmarking Rust WASM</h2>
+      <div className="flex-container">
+        <div className="card">
+          <h3>WASM Proteins</h3>
+          <input type="number" value={a} onChange={(event) => {
+            setA(parseInt(event.target.value))
+          }} />
+          <button onClick={() => {
+            init().then(() => {
+              var startTime = performance.now();
+              var result = proteins(randomProtein(a), randomProtein(a));
+              var endTime = performance.now();
+              setProteinText(result);
+              console.log(`Time taken in total: ${endTime - startTime}`);
+            })
+          }}>
+            Align Proteins!
+          </button>
+          <p>{proteinText}</p>
+        </div>
+        <div className="card">
+          <h2>WASM Primes</h2>
+          <input type="number" value={b} onChange={(event) => {
+            setB(parseInt(event.target.value))
+          }} />
+          <button onClick={() => {
+            init().then(() => {
+              var startTime = performance.now();
+              const result = calculate_primes(b);
+              var endTime = performance.now();
+              setPrimeText(result);
+              console.log(`Time taken in total: ${endTime - startTime}`);
+            })
+          }}>
+            Calculate Primes!
+          </button>
+          <p>{primeText}</p>
+        </div>
+        <NeedlemanWunsch></NeedlemanWunsch>
+        <SieveOfAtkin></SieveOfAtkin>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-      <input type="number" value={a} onChange={(event) => {
-          setA(parseInt(event.target.value))
-        }}/>
-        <button onClick={() => {
-          init().then(() => {
-            var startTime = performance.now();
-            var result = proteins(randomProtein(a), randomProtein(a));
-            var endTime = performance.now();
-            console.log(result);
-            console.log(`Time taken in total: ${endTime - startTime}`);
-          })
-        }}>
-          Calculate!
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   )
 }

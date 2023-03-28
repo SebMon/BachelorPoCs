@@ -1,8 +1,10 @@
 use needleman_wunsch::calculate_score;
+use sieve_of_atkin::get_primes;
 use wasm_bindgen::prelude::*;
 use instant::*;
 
 mod needleman_wunsch;
+mod sieve_of_atkin;
 
 #[wasm_bindgen]
 pub fn fib(a: i32) -> i32 {
@@ -15,7 +17,6 @@ pub fn fib(a: i32) -> i32 {
 
 #[wasm_bindgen]
 pub fn proteins(input1: String, input2: String) -> String {
-    let outer_start = Instant::now();
     let mut input_vec1 = Vec::new();
     let mut input_vec2 = Vec::new();
 
@@ -27,13 +28,16 @@ pub fn proteins(input1: String, input2: String) -> String {
         input_vec2.push(c);
     }
     
-    let inner_start = Instant::now();
+    let start = Instant::now();
     let output: (Vec<char>, Vec<char>) = calculate_score(&input_vec1, &input_vec2);
-    let inner_duration = inner_start.elapsed();
+    let duration = start.elapsed();
+    format!("S1 length: {}. S2 length: {}. Millis: {}.", output.0.len(), output.1.len(), duration.as_millis())
+}
 
-    let s: String = output.0.iter().collect();
-    let s2: String = output.1.iter().collect();
-    let outer_duration = outer_start.elapsed();
-    let timing = &format!("\nOuter WASM time: {}\nInner WASM time: {}", outer_duration.as_millis(), inner_duration.as_millis());
-    s + "\n" + &s2 + timing
+#[wasm_bindgen]
+pub fn calculate_primes(limit: usize) -> String {
+    let start = Instant::now();
+    let primes = get_primes(&limit);
+    let duration = start.elapsed();
+    format!("Primes: {}. Millis: {}", primes.len(), duration.as_millis())
 }
