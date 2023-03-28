@@ -47,45 +47,50 @@ function getProteins(x: String, y: String): String[] {
     let nx = x.length;
     let ny = y.length;
 
-    let f = [...Array(nx + 1)].map(e => Array(ny + 1).fill(0));
+    let n = nx + 1;
+    let m = ny + 1;
 
-    for (let i = 0; i < f.length; i++) {
-        f[i][0] = GAP_PENALTY * -i;
+    //let f = [...Array(nx + 1)].map(e => Array(ny + 1).fill(0));
+    let f = Array(n * m).fill(0);
+
+    for (let i = 0; i < n; i++) {
+        f[i * m + 0] = GAP_PENALTY * -i;
     }
-    for (let i = 0; i < f[0].length; i++) {
-        f[0][i] = GAP_PENALTY * -i;
+    for (let i = 0; i < m; i++) {
+        f[0 * m + i] = GAP_PENALTY * -i;
     }
 
-    let p = [...Array(nx + 1)].map(e => Array(ny + 1).fill(0));
-    for (let i = 0; i < p.length; i++) {
-        p[i][0] = 3;
+    //let p = [...Array(nx + 1)].map(e => Array(ny + 1).fill(0));
+    let p = Array(n * m).fill(0);
+    for (let i = 0; i < n; i++) {
+        p[i * m + 0] = 3;
     }
-    for (let i = 0; i < p[0].length; i++) {
-        p[0][i] = 4;
+    for (let i = 0; i < m; i++) {
+        p[0 * m + i] = 4;
     }
 
     let t = [0, 0, 0];
     for (let i = 0; i < nx; i++) {
         for (let j = 0; j < ny; j++) {
             if (x[i] == y[j]) {
-                t[0] = f[i][j] + MATCH_AWARD;
+                t[0] = f[i * m + j] + MATCH_AWARD;
             } else {
-                t[0] = f[i][j] - MISMATCH_PENALTY;
+                t[0] = f[i * m + j] - MISMATCH_PENALTY;
             }
-            t[1] = f[i][j + 1] - GAP_PENALTY;
-            t[2] = f[i + 1][j] - GAP_PENALTY;
+            t[1] = f[i * m + (j + 1)] - GAP_PENALTY;
+            t[2] = f[(i + 1) * m + j] - GAP_PENALTY;
 
             let max_value = Math.max(...t);
-            f[i + 1][j + 1] = max_value;
+            f[(i + 1) * m + (j + 1)] = max_value;
 
             if (t[0] == max_value) {
-                p[i + 1][j + 1] += 2;
+                p[(i + 1) * m + (j + 1)] += 2;
             }
             if (t[1] == max_value) {
-                p[i + 1][j + 1] += 3;
+                p[(i + 1) * m + (j + 1)] += 3;
             }
             if (t[2] == max_value) {
-                p[i + 1][j + 1] += 4;
+                p[(i + 1) * m + (j + 1)] += 4;
             }
         }
     }
@@ -97,16 +102,16 @@ function getProteins(x: String, y: String): String[] {
     let ry = "";
 
     while (i > 0 || j > 0) {
-        if ([2, 5, 6, 9].includes(p[i][j])) {
+        if ([2, 5, 6, 9].includes(p[i * m + j])) {
             rx += x[i - 1];
             ry += y[j - 1];
             i -= 1;
             j -= 1;
-        } else if ([3, 5, 7, 9].includes(p[i][j])) {
+        } else if ([3, 5, 7, 9].includes(p[i * m + j])) {
             rx += x[i - 1];
             ry += "-";
             i -= 1;
-        } else if ([4, 6, 7, 9].includes(p[i][j])) {
+        } else if ([4, 6, 7, 9].includes(p[i * m + j])) {
             rx += "-";
             ry += y[j - 1];
             j -= 1;
