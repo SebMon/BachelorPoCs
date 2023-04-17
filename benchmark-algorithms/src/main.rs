@@ -8,25 +8,27 @@ mod sieve_of_atkin;
 mod needleman_wunsch;
 
 const PRIME_LIMIT: usize= 50_000_000;
-const PROTEIN_SIZE: u32 = 5_000;
+const PROTEIN_SIZE: u32 = 20_000;
 
 fn main() {
-    let start = Instant::now();
-    let primes = sieve_of_atkin::get_primes(&PRIME_LIMIT);
-    let duration = start.elapsed();
-    // Uncomment below loop to print 
-    // Printing does not affect the timer, but will have an effect on 
-    // profiling/measuring from the outside.
-    
-    /*
-    for prime in _primes {
-        print!("{} ", prime.separate_with_commas());
+    loop {
+        let mut line = String::new();
+        println!("Input protein or prime");
+        std::io::stdin().read_line(&mut line).expect("Failed to read line");
+        
+        if line.trim() == "protein" {
+            run_protein();
+        } else if line.trim() == "prime" {
+            run_prime();
+        } else if ["quit", "q", "exit"].contains(&line.trim()) {
+            break;
+        } else {
+            println!("Error");
+        }
     }
-    println!("");
-    */
-    println!("Prime millis: {}. Prime limit: {}. Prime amount: {}", duration.as_millis().separate_with_commas(), PRIME_LIMIT.separate_with_commas(), primes.len());
+}
 
-
+fn run_protein() {
     // Generate random protein strings
     let mut protein_x: Vec<char> = Vec::new();
     let mut protein_y: Vec<char> = Vec::new();
@@ -51,5 +53,21 @@ fn main() {
     }
     println!("");
     */
-    
+}
+
+fn run_prime() {
+    let start = Instant::now();
+            let primes = sieve_of_atkin::get_primes(&PRIME_LIMIT);
+            let duration = start.elapsed();
+            // Uncomment below loop to print 
+            // Printing does not affect the timer, but will have an effect on 
+            // profiling/measuring from the outside.
+            
+            /*
+            for prime in _primes {
+                print!("{} ", prime.separate_with_commas());
+            }
+            println!("");
+            */
+            println!("Prime millis: {}. Prime limit: {}. Prime amount: {}", duration.as_millis().separate_with_commas(), PRIME_LIMIT.separate_with_commas(), primes.len());
 }
