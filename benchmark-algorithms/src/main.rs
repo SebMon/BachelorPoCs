@@ -10,8 +10,9 @@ mod sieve_of_atkin;
 mod needleman_wunsch;
 mod aes;
 
-const PRIME_LIMIT: usize= 50_000_000;
+const PRIME_LIMIT: usize= 500_000_000;
 const PROTEIN_SIZE: u32 = 20_000;
+const ENCRYPT_SIZE: usize = 20_000_000;
 
 fn main() {
     loop {
@@ -75,12 +76,29 @@ fn run_prime() {
 }
 
 fn run_aes() {
-    let plain: String = String::from("Hello world, I'm testing my algorithm");
-    let key = String::from("3533363835363644353937313333373333363736333937393234343232363435");
-    
-    let cipher = aes_encrypt(plain.into_bytes(), hex::decode(key.clone()).expect("Decoding failed"));
-    println!("Encrypted: {:?}", hex::encode(cipher.clone()));
+    let mut plain: String = String::new();
+    let possible_values = vec![
+        'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+        'a','b','c','d','e','f','g','h','i','j','k','l','m','m','o','p','q','r','s','t','u','v','w','x','y','z',
+        ' ','.',',',';',':','\n'];
+    for _ in 0..ENCRYPT_SIZE {
+        plain.push(possible_values.choose(&mut rand::thread_rng()).unwrap().clone());
+    }
 
+    //let plain: String = String::from("Hello world, I'm testing my algorithm");
+    let key = String::from("3533363835363644353937313333373333363736333937393234343232363435");
+
+    //println!("Before encryption: {}\n", plain);
+
+    let encrypt_start = Instant::now();    
+    let cipher = aes_encrypt(plain.into_bytes(), hex::decode(key.clone()).expect("Decoding failed"));
+    let encrypt_duration = encrypt_start.elapsed();
+    //println!("Encrypted: {:?}, duration: {}\n", hex::encode(cipher.clone()), encrypt_duration.as_millis().separate_with_commas());
+    println!("Encryption duration: {}. Encrypted length: {}", encrypt_duration.as_millis().separate_with_commas(), cipher.len());
+
+    let decrypt_start = Instant::now();
     let new_plain = aes_decrypt(cipher, hex::decode(key).expect("Decoding failed"));
-    println!("Decrypted: {:?}", String::from_utf8_lossy(&new_plain));
+    let decrypt_duration = decrypt_start.elapsed();
+    //println!("Decrypted: {}, duration: {}", String::from_utf8_lossy(&new_plain), decrypt_duration.as_millis().separate_with_commas());
+    println!("Decryption duration: {}. Decrypted length: {}", decrypt_duration.as_millis().separate_with_commas(), new_plain.len());
 }
