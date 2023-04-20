@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function SieveOfAtkin() {
+function SieveOfAtkinJS() {
   const [limit, setLimit] = useState(0);
   const [text, setText] = useState("");
 
@@ -31,7 +31,7 @@ function SieveOfAtkin() {
   );
 }
 
-export default SieveOfAtkin;
+export default SieveOfAtkinJS;
 
 function getPrimes(limit: number): number[] {
   let primes = [];
