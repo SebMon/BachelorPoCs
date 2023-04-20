@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::*;
 
 mod needleman_wunsch;
 mod sieve_of_atkin;
+mod aes;
 
 #[wasm_bindgen]
 pub fn fib(a: i32) -> i32 {
@@ -34,4 +35,14 @@ pub fn proteins(input1: String, input2: String) -> String {
 pub fn calculate_primes(limit: usize) -> String {
     let primes = get_primes(&limit);
     format!("Primes: {}.", primes.len())
+}
+
+#[wasm_bindgen]
+pub fn aes_encrypt(data: Vec<u8>, key: Vec<u8>) -> Vec<u8> {
+    aes::aes_encrypt(data, key)
+}
+
+#[wasm_bindgen]
+pub fn aes_decrypt(data: Vec<u8>, key: Vec<u8>) -> Vec<u8> {
+    aes::aes_decrypt(data, key)
 }

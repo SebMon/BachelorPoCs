@@ -1,8 +1,16 @@
 import { useState } from "react";
 import "./App.css";
-import init, { calculate_primes, proteins } from "src-wasm";
-import SieveOfAtkin from "./SieveOfAtkin";
-import NeedlemanWunsch from "./NeedlemanWunsch";
+import init, {
+  calculate_primes,
+  proteins,
+  aes_decrypt,
+  aes_encrypt,
+} from "src-wasm";
+import SieveOfAtkinJS from "./SieveOfAtkinJS";
+import NeedlemanWunschJS from "./NeedlemanWunschJS";
+import NeedlemanWunschWASM from "./NeedlemanWunchWASM";
+import SieveOfAtkinWASM from "./SieveOfAtkinWASM";
+import AesWASM from "./AesWASM";
 
 function randomProtein(length: number) {
   let result = "";
@@ -18,67 +26,15 @@ function randomProtein(length: number) {
 }
 
 function App() {
-  const [a, setA] = useState(0);
-  const [b, setB] = useState(0);
-  const [primeText, setPrimeText] = useState("");
-  const [proteinText, setProteinText] = useState("");
-
   return (
     <div className="App">
       <h2>Benchmarking Rust WASM</h2>
       <div className="flex-container">
-        <div className="card">
-          <h3>WASM Proteins</h3>
-          <input
-            type="number"
-            value={a}
-            onChange={(event) => {
-              setA(parseInt(event.target.value));
-            }}
-          />
-          <button
-            onClick={() => {
-              init().then(() => {
-                let startTime = performance.now();
-                const result = proteins(randomProtein(a), randomProtein(a));
-                let endTime = performance.now();
-                setProteinText(
-                  result + ` Millis: ${Math.round(endTime - startTime)}`
-                );
-              });
-            }}
-          >
-            Align Proteins!
-          </button>
-          <p>{proteinText}</p>
-        </div>
-        <div className="card">
-          <h2>WASM Primes</h2>
-          <input
-            type="number"
-            value={b}
-            onChange={(event) => {
-              setB(parseInt(event.target.value));
-            }}
-          />
-          <button
-            onClick={() => {
-              init().then(() => {
-                let startTime = performance.now();
-                const result = calculate_primes(b);
-                let endTime = performance.now();
-                setPrimeText(
-                  result + ` Millis: ${Math.round(endTime - startTime)}`
-                );
-              });
-            }}
-          >
-            Calculate Primes!
-          </button>
-          <p>{primeText}</p>
-        </div>
-        <NeedlemanWunsch></NeedlemanWunsch>
-        <SieveOfAtkin></SieveOfAtkin>
+        <NeedlemanWunschWASM></NeedlemanWunschWASM>
+        <SieveOfAtkinWASM></SieveOfAtkinWASM>
+        <AesWASM></AesWASM>
+        <NeedlemanWunschJS></NeedlemanWunschJS>
+        <SieveOfAtkinJS></SieveOfAtkinJS>
       </div>
     </div>
   );
