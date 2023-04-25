@@ -11,6 +11,7 @@ import NeedlemanWunschJS from "./NeedlemanWunschJS";
 import NeedlemanWunschWASM from "./NeedlemanWunchWASM";
 import SieveOfAtkinWASM from "./SieveOfAtkinWASM";
 import AesWASM from "./AesWASM";
+import RsaWASM from "./RsaWASM";
 
 function randomProtein(length: number) {
   let result = "";
@@ -33,6 +34,7 @@ function App() {
         <NeedlemanWunschWASM></NeedlemanWunschWASM>
         <SieveOfAtkinWASM></SieveOfAtkinWASM>
         <AesWASM></AesWASM>
+        <RsaWASM></RsaWASM>
         <NeedlemanWunschJS></NeedlemanWunschJS>
         <SieveOfAtkinJS></SieveOfAtkinJS>
       </div>
