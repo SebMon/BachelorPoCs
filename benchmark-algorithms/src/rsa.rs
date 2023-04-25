@@ -5,7 +5,36 @@ use num_bigint::{BigUint, ToBigUint};
 const H_LEN: usize = 20;
 const L_HASH: [u8; 20] = [218, 57, 163, 238, 94, 107, 75, 13, 50, 85, 191, 239, 149, 96, 24, 144, 175, 216, 7, 9];
 
-pub fn rsaes_oaep_encrypt (modulo: Vec<u8>, exponent: Vec<u8>, mut input: Vec<u8>) -> Vec<u8> {
+pub fn rsa_encrypt(modulo: &Vec<u8>, exponent: &Vec<u8>, input: Vec<u8>) -> Vec<u8> {
+  let key_length = modulo.len();
+  let block_length = key_length - 2 * H_LEN - 2;
+  let blocks = (input.len() + block_length - 1) / block_length; // Same as ceil(input.len() / block_length)
+  
+  let mut output: Vec<u8> = Vec::new();
+
+  for i in 0..blocks {
+    if (i + 1) * block_length > input.len() {
+      output.append(&mut rsaes_oaep_encrypt(&modulo, &exponent, input[i * block_length..input.len()].to_vec()));
+      break;
+    }
+    output.append(&mut rsaes_oaep_encrypt(&modulo, &exponent, input[i * block_length..(i + 1) * block_length].to_vec()));
+  }
+  output
+}
+
+pub fn rsa_decrypt(modulo: &Vec<u8>, exponent: &Vec<u8>, input: Vec<u8>) -> Vec<u8> {
+  let key_length = modulo.len();
+  let blocks = (input.len() + key_length - 1) / key_length; // Same as ceil(input.len() / key_length)
+  let mut output: Vec<u8> = Vec::new();
+
+  for i in 0..blocks - 1 {
+    output.append(&mut rsaes_oaep_decrypt(&modulo, &exponent, input[i * key_length..(i + 1) * key_length].to_vec()));
+  }
+  output.append(&mut rsaes_oaep_decrypt(&modulo, &exponent, input[(blocks - 1) * key_length..blocks * key_length].to_vec()));
+  output
+}
+
+pub fn rsaes_oaep_encrypt (modulo: &Vec<u8>, exponent: &Vec<u8>, mut input: Vec<u8>) -> Vec<u8> {
   let k = modulo.len();
 
   if input.len() > k - 2 * H_LEN - 2 {
@@ -48,7 +77,7 @@ pub fn rsaes_oaep_encrypt (modulo: Vec<u8>, exponent: Vec<u8>, mut input: Vec<u8
   i2osp(c, k.try_into().expect("K is too big"))
 }
 
-pub fn rsaes_oaep_decrypt(modulo: Vec<u8>, exponent: Vec<u8>, input: Vec<u8>) -> Vec<u8> {
+pub fn rsaes_oaep_decrypt(modulo: &Vec<u8>, exponent: &Vec<u8>, input: Vec<u8>) -> Vec<u8> {
   let k = modulo.len();
   if input.len() != k {
     panic!("Decryption error");
