@@ -5,5 +5,7 @@ edition = "2021"
 
 [dependencies]
 hex = "0.4.3"
+num-bigint = "0.4.3"
 rand = "0.8.5"
+sha1_smol = "1.0.0"
 thousands = "0.2.0"
