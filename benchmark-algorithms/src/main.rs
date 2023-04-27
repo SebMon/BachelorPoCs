@@ -14,8 +14,8 @@ mod rsa;
 
 const PRIME_LIMIT: usize= 500_000_000;
 const PROTEIN_SIZE: u32 = 20_000;
-const AES_ENCRYPT_SIZE: usize = 20_000_000;
-const RSA_ENCRYPT_SIZE: usize = 214;
+const AES_ENCRYPT_SIZE: usize = 5_000_000;
+const RSA_ENCRYPT_SIZE: usize = 50_000;
 
 fn main() {
     loop {
@@ -158,18 +158,16 @@ fn run_rsa() {
     for _ in 0..RSA_ENCRYPT_SIZE {
         plain.push(possible_values.choose(&mut rand::thread_rng()).unwrap().clone());
     }
-    println!("Before: {}", plain);
 
     let bytes_to_encrypt = plain.into_bytes();
 
     let encrypt_start = Instant::now();
-    let bytes_to_decrypt = rsa_encrypt(&private_modulo, &private_exponent, bytes_to_encrypt);
+    let bytes_to_decrypt = rsa_encrypt(&public_modulo, &public_exponent, bytes_to_encrypt);
     let encrypt_duration = encrypt_start.elapsed();
     println!("Encryption duration: {}. Encrypted length: {}", encrypt_duration.as_millis().separate_with_commas(), bytes_to_decrypt.len());
     
     let decrypt_start = Instant::now();   
-    let decrypted = rsa_decrypt(&public_modulo, &public_exponent, bytes_to_decrypt);
+    let decrypted = rsa_decrypt(&private_modulo, &private_exponent, bytes_to_decrypt);
     let decrypt_duration = decrypt_start.elapsed();
     println!("Decryption duration: {}. Decrypted length: {}", decrypt_duration.as_millis().separate_with_commas(), decrypted.len());
-    println!("After: {}", String::from_utf8_lossy(&decrypted));
 }

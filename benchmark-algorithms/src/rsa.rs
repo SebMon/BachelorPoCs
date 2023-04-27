@@ -59,7 +59,6 @@ pub fn rsaes_oaep_encrypt (modulo: &Vec<u8>, exponent: &Vec<u8>, mut input: Vec<
   let mut masked_db = xor(&db, &db_mask);
   let seed_mask = mgf(&masked_db, H_LEN);
   let mut masked_seed = xor(&seed, &seed_mask);
-  
 
   let mut em: Vec<u8> = Vec::new();
   em.push(0); 
@@ -68,8 +67,6 @@ pub fn rsaes_oaep_encrypt (modulo: &Vec<u8>, exponent: &Vec<u8>, mut input: Vec<
   while em.len() < k {
     em.push(0);
   }
-
-  
 
   let m = os2ip(&em);
 

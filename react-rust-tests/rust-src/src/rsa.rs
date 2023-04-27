@@ -69,8 +69,6 @@ pub fn rsaes_oaep_encrypt (modulo: &Vec<u8>, exponent: &Vec<u8>, mut input: Vec<
     em.push(0);
   }
 
-  
-
   let m = os2ip(&em);
 
   let c = rsaep(&modulo, &exponent, m);
@@ -212,6 +210,6 @@ fn mod_exp(mut base: UBig, mut exponent: UBig, modulo: UBig) -> UBig {
     }
     exponent = exponent / 2_u8;
     base = base.pow(2) % &modulo;
-  }
+  }  
   result
 }
