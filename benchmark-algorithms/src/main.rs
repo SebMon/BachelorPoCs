@@ -14,7 +14,8 @@ mod rsa;
 
 const PRIME_LIMIT: usize= 500_000_000;
 const PROTEIN_SIZE: u32 = 20_000;
-const ENCRYPT_SIZE: usize = 20_000_000;
+const AES_ENCRYPT_SIZE: usize = 20_000_000;
+const RSA_ENCRYPT_SIZE: usize = 214;
 
 fn main() {
     loop {
@@ -84,7 +85,7 @@ fn run_aes() {
         'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
         'a','b','c','d','e','f','g','h','i','j','k','l','m','m','o','p','q','r','s','t','u','v','w','x','y','z',
         ' ','.',',',';',':','\n'];
-    for _ in 0..ENCRYPT_SIZE {
+    for _ in 0..AES_ENCRYPT_SIZE {
         plain.push(possible_values.choose(&mut rand::thread_rng()).unwrap().clone());
     }
 
@@ -149,13 +150,26 @@ fn run_rsa() {
         117, 43, 230, 1, 225
     ];
 
-    let plain = String::from("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+    let mut plain: String = String::new();
+    let possible_values = vec![
+        'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+        'a','b','c','d','e','f','g','h','i','j','k','l','m','m','o','p','q','r','s','t','u','v','w','x','y','z',
+        ' ','.',',',';',':','\n'];
+    for _ in 0..RSA_ENCRYPT_SIZE {
+        plain.push(possible_values.choose(&mut rand::thread_rng()).unwrap().clone());
+    }
+    println!("Before: {}", plain);
+
     let bytes_to_encrypt = plain.into_bytes();
 
+    let encrypt_start = Instant::now();
     let bytes_to_decrypt = rsa_encrypt(&private_modulo, &private_exponent, bytes_to_encrypt);
-    println!("Encrypt done: {:?} \n", hex::encode(bytes_to_decrypt.clone()));
+    let encrypt_duration = encrypt_start.elapsed();
+    println!("Encryption duration: {}. Encrypted length: {}", encrypt_duration.as_millis().separate_with_commas(), bytes_to_decrypt.len());
     
+    let decrypt_start = Instant::now();   
     let decrypted = rsa_decrypt(&public_modulo, &public_exponent, bytes_to_decrypt);
-    
-    println!("Decrypted: {}", String::from_utf8_lossy(&decrypted));
+    let decrypt_duration = decrypt_start.elapsed();
+    println!("Decryption duration: {}. Decrypted length: {}", decrypt_duration.as_millis().separate_with_commas(), decrypted.len());
+    println!("After: {}", String::from_utf8_lossy(&decrypted));
 }
