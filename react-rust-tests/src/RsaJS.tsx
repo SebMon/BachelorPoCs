@@ -1,5 +1,71 @@
 import { useState } from "react";
-import init, { rsa_encrypt, rsa_decrypt } from "src-wasm";
+import { AESEncrypt } from "./encryption/aes/encrypt";
+import { AESDecrypt } from "./encryption/aes/decrypt";
+import { RSAdecrypt, RSAencrypt } from "./encryption/rsa/rsa";
+
+const aesKey: Uint8Array = new Uint8Array([
+  53, 51, 54, 56, 53, 54, 54, 68, 53, 57, 55, 49, 51, 51, 55, 51, 51, 54, 55,
+  54, 51, 57, 55, 57, 50, 52, 52, 50, 50, 54, 52, 53,
+]);
+
+export default function RsaJS() {
+  const [inputSize, setInputSize] = useState(0);
+  const [encryptTiming, setEncryptTiming] = useState("");
+  const [decryptTiming, setDecryptTiming] = useState("");
+
+  return (
+    <div className="card">
+      <h2>JS RSA</h2>
+      <label>Length of encryption input</label>
+      <input
+        type="number"
+        value={inputSize}
+        onChange={(event) => {
+          setInputSize(parseInt(event.target.value));
+        }}
+      />
+
+      <button
+        onClick={() => {
+          let startTime = performance.now();
+          RSAencrypt(
+            randomByteArray(inputSize),
+            PublicModulo,
+            PublicExponent
+          ).then((encrypted) => {
+            let endTime = performance.now();
+            setEncryptTiming(
+              `Encrypted into ${encrypted.length} bytes in: ${Math.round(
+                endTime - startTime
+              )} miliseconds.`
+            );
+            startTime = performance.now();
+            RSAdecrypt(encrypted, PrivateModulo, PrivateExponent).then(
+              (decrypted) => {
+                endTime = performance.now();
+                setDecryptTiming(
+                  `Decrypted into ${decrypted.length} bytes in: ${Math.round(
+                    endTime - startTime
+                  )} miliseconds.`
+                );
+              }
+            );
+          });
+        }}
+      >
+        Test!
+      </button>
+      <p>{encryptTiming}</p>
+      <p>{decryptTiming}</p>
+    </div>
+  );
+}
+
+function randomByteArray(length: number): Uint8Array {
+  return Uint8Array.from({ length: length }, () =>
+    Math.floor(Math.random() * 255)
+  );
+}
 
 const PublicModulo = new Uint8Array([
   175, 68, 187, 247, 176, 243, 132, 110, 90, 46, 72, 231, 114, 156, 52, 43, 25,
@@ -60,63 +126,12 @@ const PrivateExponent = new Uint8Array([
   117, 43, 230, 1, 225,
 ]);
 
-export default function RsaWASM() {
-  const [inputSize, setInputSize] = useState(0);
-  const [encryptTiming, setEncryptTiming] = useState("");
-  const [decryptTiming, setDecryptTiming] = useState("");
-
-  return (
-    <div className="card">
-      <h2>WASM RSA</h2>
-      <label>Length of encryption input</label>
-      <input
-        type="number"
-        value={inputSize}
-        onChange={(event) => {
-          setInputSize(parseInt(event.target.value));
-        }}
-      />
-
-      <button
-        onClick={() => {
-          init().then(() => {
-            let startTime = performance.now();
-            const encrypted = rsa_encrypt(
-              randomByteArray(inputSize),
-              PublicModulo,
-              PublicExponent
-            );
-            let endTime = performance.now();
-            setEncryptTiming(
-              `Encrypted into ${encrypted.length} bytes in: ${Math.round(
-                endTime - startTime
-              )} miliseconds.`
-            );
-            startTime = performance.now();
-            const decrypted = rsa_decrypt(
-              encrypted,
-              PrivateModulo,
-              PrivateExponent
-            );
-            endTime = performance.now();
-            setDecryptTiming(
-              `Decrypted into ${decrypted.length} bytes in: ${Math.round(
-                endTime - startTime
-              )} miliseconds.`
-            );
-          });
-        }}
-      >
-        Test!
-      </button>
-      <p>{encryptTiming}</p>
-      <p>{decryptTiming}</p>
-    </div>
-  );
+function textToBytes(text: string): Uint8Array {
+  const encoder = new TextEncoder();
+  return encoder.encode(text);
 }
 
-function randomByteArray(length: number): Uint8Array {
-  return Uint8Array.from({ length: length }, () =>
-    Math.floor(Math.random() * 255)
-  );
+export function bytesToText(bytes: Uint8Array): string {
+  const decoder = new TextDecoder();
+  return decoder.decode(bytes);
 }

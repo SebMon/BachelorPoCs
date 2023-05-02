@@ -1,17 +1,14 @@
 import { useState } from "react";
 import "./App.css";
-import init, {
-  calculate_primes,
-  proteins,
-  aes_decrypt,
-  aes_encrypt,
-} from "src-wasm";
 import SieveOfAtkinJS from "./SieveOfAtkinJS";
 import NeedlemanWunschJS from "./NeedlemanWunschJS";
 import NeedlemanWunschWASM from "./NeedlemanWunchWASM";
 import SieveOfAtkinWASM from "./SieveOfAtkinWASM";
 import AesWASM from "./AesWASM";
 import RsaWASM from "./RsaWASM";
+import AesJS from "./AesJS";
+import RsaJS from "./RsaJS";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function randomProtein(length: number) {
   let result = "";
@@ -30,13 +27,39 @@ function App() {
   return (
     <div className="App">
       <h2>Benchmarking Rust WASM</h2>
-      <div className="flex-container">
-        <NeedlemanWunschWASM></NeedlemanWunschWASM>
-        <SieveOfAtkinWASM></SieveOfAtkinWASM>
-        <AesWASM></AesWASM>
-        <RsaWASM></RsaWASM>
-        <NeedlemanWunschJS></NeedlemanWunschJS>
-        <SieveOfAtkinJS></SieveOfAtkinJS>
+      <div className="container">
+        <div className="row">
+          <div className="col-sm">
+            <NeedlemanWunschWASM></NeedlemanWunschWASM>
+          </div>
+          <div className="col-sm">
+            <NeedlemanWunschJS></NeedlemanWunschJS>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm">
+            <SieveOfAtkinWASM></SieveOfAtkinWASM>
+          </div>
+          <div className="col-sm">
+            <SieveOfAtkinJS></SieveOfAtkinJS>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm">
+            <AesWASM></AesWASM>
+          </div>
+          <div className="col-sm">
+            <AesJS></AesJS>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm">
+            <RsaWASM></RsaWASM>
+          </div>
+          <div className="col-sm">
+            <RsaJS></RsaJS>
+          </div>
+        </div>
       </div>
     </div>
   );
